@@ -7,7 +7,7 @@
 //
 
 import UIKit
- 
+
 class BusinessesViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var searchBar: UISearchBar!
@@ -24,7 +24,7 @@ class BusinessesViewController: UIViewController {
         self.navigationItem.leftBarButtonItem = leftNavBarBtn
         
         
-            
+        
         tableView.delegate = self
         tableView.dataSource = self
         searchBar.delegate = self
@@ -72,7 +72,7 @@ class BusinessesViewController: UIViewController {
 extension BusinessesViewController: UITableViewDataSource, UITableViewDelegate, FiltersViewControllerDelegate, UISearchBarDelegate {
     
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-    searchActive = true
+        searchActive = true
     }
     
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
@@ -97,7 +97,7 @@ extension BusinessesViewController: UITableViewDataSource, UITableViewDelegate, 
                     print(business.name!)
                     print(business.address!)
                 }
-                    
+                
                 self.tableView.reloadData()
             }
             
@@ -121,11 +121,11 @@ extension BusinessesViewController: UITableViewDataSource, UITableViewDelegate, 
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "businessCell") as! BusinessCell
-            
-            cell.business = businesses[indexPath.row]
-            
-            return cell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "businessCell") as! BusinessCell
+        
+        cell.business = businesses[indexPath.row]
+        
+        return cell
     }
     
     func filtersViewController(filterVC: FiltersViewController, didUpdateCategories categories: [String], didUpdateDeal: Bool, didUpdateDistance: NSNumber, didUpdateMode: YelpSortMode) {
@@ -136,15 +136,18 @@ extension BusinessesViewController: UITableViewDataSource, UITableViewDelegate, 
         
         Business.search(with: "", sort: didUpdateMode, categories: categories, deals: didUpdateDeal) { (businesses: [Business]?, error: Error?) in
             if let businesses = businesses {
-                self.businesses = businesses
                 
                 for business in businesses {
-                    print(business.name!)
-                    print(business.address!)
+                    if business.distanceNum < Double(didUpdateDistance) {
+                        var filteredBusiness = [Business]()
+                        filteredBusiness.append(business)
+                        self.businesses = filteredBusiness
+                    }
+                    
+                    self.tableView.reloadData()
                 }
-                self.tableView.reloadData()
+                
             }
-            
         }
     }
 }

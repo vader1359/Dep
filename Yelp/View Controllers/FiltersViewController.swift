@@ -39,7 +39,7 @@ class FiltersViewController: UIViewController {
         case 3:
             self.selectedDistance = 5
         default:
-            self.selectedDistance = 0.0
+            self.selectedDistance = 100.0
         }
     }
     
